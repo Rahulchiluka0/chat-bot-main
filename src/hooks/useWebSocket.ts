@@ -30,7 +30,7 @@ const useWebSocket = () => {
     const client = Stomp.over(socket);
     client.debug = () => {};
 
-    client.connect({ pageId: uuid || "default" }, (frame) => {
+    client.connect({ pageId: uuid || "default" }, (frame: any) => {
       console.log("STOMP Connected: " + frame);
       setStompClient(client);
       setIsConnected(true);
@@ -58,7 +58,7 @@ const useWebSocket = () => {
           setMessages((prev) => [...prev, message.body]);
         }
       );
-    }, (error) => {
+    }, (error: any) => {
       console.error("STOMP Connection error:", error);
       setIsConnected(false);
     });
