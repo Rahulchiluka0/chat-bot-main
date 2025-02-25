@@ -25,7 +25,7 @@ const useWebSocket = () => {
     subscribedRef.current = true;
 
     const uuid = getUUIDFromCookies();
-    const url = "http://192.168.29.156:8080/meta/api/websocket";
+    const url = "https://192.168.29.156:8080/meta/api/websocket";
     const socket = new SockJS(url);
     const client = Stomp.over(socket);
     client.debug = () => {};
