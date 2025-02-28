@@ -6,9 +6,10 @@ interface ChatMessageProps {
   message: string | { file: File; fileURL: string };
   sender: "user" | "auto";
   name?: string;
-  type?: "text" | "file" | "audio" | "call" | "image"; // Added image type
+  type?: "text" | "file" | "audio" | "call" | "image" | "link";
+  showName?: boolean;
 }
-// Define the file type to icon mapping
+
 const fileIconMap: Record<string, string> = {
   csv: "/icons/csv.png",
   docx: "/icons/docx.png",
@@ -23,14 +24,11 @@ const fileIconMap: Record<string, string> = {
   zip: "/icons/zip.png",
 };
 
-// Get the icon for a file based on its extension
 const getFileIcon = (fileName: string): string => {
-  console.log("fileName=", fileName);
-
   const extension = fileName.split(".").pop()?.toLowerCase();
   return (
     fileIconMap[extension as keyof typeof fileIconMap] || "/icons/file-icon.png"
-  ); // Default file icon if extension doesn't match
+  );
 };
 
 const ChatMessage = ({
@@ -38,9 +36,9 @@ const ChatMessage = ({
   sender,
   name,
   type = "text",
+  showName = true
 }: ChatMessageProps) => {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
-
   const isUser = sender === "user";
 
   const handleDownloadImage = async (imageUrl: string) => {
@@ -59,17 +57,28 @@ const ChatMessage = ({
       console.error("Error downloading image:", error);
     }
   };
+
   return (
     <div className={`message-bubble ${isUser ? "user" : ""}`}>
       <div className="message-content">
-        {name && (
+        {showName && name && (
           <span className={isUser ? "name-message-align" : "message-sender"}>
             {name}
           </span>
         )}
 
-        {type === "text" &&  typeof message === "string" && (
+        {type === "text" && typeof message === "string" && (
           <div className={`message-text ${sender}`}>{message}</div>
+        )}
+
+
+        {type === "link" && typeof message === "string" && (
+          <div className={`message-text ${sender}`}>
+            Great news! We've found a match. Click the link below to see all the details in a new tab:{" "}
+            <a href={message} className="underline" target="_blank" rel="noopener noreferrer">
+              {message}
+            </a>
+          </div>
         )}
 
         {type === "file" && typeof message !== "string" && (
@@ -114,15 +123,15 @@ const ChatMessage = ({
             </IconButton>
           </div>
         )}
+
         {type === "audio" && typeof message === "string" && (
           <audio controls className="audio-design">
             <source src={message} type="audio/webm" />
             Your browser does not support the audio element.
           </audio>
         )}
-
       </div>
-      {/* Image Fullscreen Modal */}
+
       <Modal open={!!selectedImage} onClose={() => setSelectedImage(null)}>
         <div className="image-modal">
           <img src={selectedImage!} alt="Full Size" className="large-image" />

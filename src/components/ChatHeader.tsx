@@ -10,7 +10,7 @@ const ChatHeader = ({ handleClose }: ChatHeaderProps) => {
     <div className="chat-header">
       <div className="header-left">
         <IconButton>
-          <PersonIcon className="custom-header-icon" fontSize="medium" />
+          <PersonIcon className="custom-header-icon" fontSize="large" />
         </IconButton>
         <div className="header-info">Autostock</div>
       </div>

@@ -30,7 +30,7 @@ const useWebSocket = () => {
     const client = Stomp.over(socket);
     client.debug = () => {};
 
-    client.connect({ pageId: uuid || "default" }, (frame: any) => {
+    client.connect({ pageId: uuid || "default" }, (frame) => {
       console.log("STOMP Connected: " + frame);
       setStompClient(client);
       setIsConnected(true);
@@ -41,24 +41,24 @@ const useWebSocket = () => {
           console.log("Received via STOMP:", message.body);
           // console.log("Received via STOMP:", JSON.parse(message.body).message.greeting);
 
-          if (JSON.parse(message.body).message.url) {
-            try {
-              // The URL field is a JSON string; parse it.
-              const urlData = JSON.parse(JSON.parse(message.body).message.url);
-              // Check that the status is "FOUND" and a detail URL exists.
-              if (urlData.status === "FOUND" && urlData.detail) {
-                // Redirect the parent window (i.e. load the URL in the current tab behind the chatbot).
-                window.parent.postMessage({ redirect: urlData.detail }, "*");
-              }
-            } catch (error) {
-              console.error("Error parsing URL:", error);
-            }
-          }
+          // if (JSON.parse(message.body).message.url) {
+          //   try {
+          //     // The URL field is a JSON string; parse it.
+          //     const urlData = JSON.parse(JSON.parse(message.body).message.url);
+          //     // Check that the status is "FOUND" and a detail URL exists.
+          //     if (urlData.status === "FOUND" && urlData.detail) {
+          //       // Redirect the parent window (i.e. load the URL in the current tab behind the chatbot).
+          //       window.top.location.href = urlData.detail;
+          //     }
+          //   } catch (error) {
+          //     console.error("Error parsing URL:", error);
+          //   }
+          // }
 
           setMessages((prev) => [...prev, message.body]);
         }
       );
-    }, (error: any) => {
+    }, (error) => {
       console.error("STOMP Connection error:", error);
       setIsConnected(false);
     });
